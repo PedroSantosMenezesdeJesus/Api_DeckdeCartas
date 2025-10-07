@@ -1,3 +1,3 @@
 # Api_DeckdeCartas
 
-(link).[https://deckofcardsapi.com/?ref=public_apis&utm_medium=website]
+[link do api sobre o deck de cartas](https://deckofcardsapi.com/?ref=public_apis&utm_medium=website)
