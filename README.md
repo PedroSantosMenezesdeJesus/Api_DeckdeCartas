@@ -17,6 +17,8 @@ O App permite que o usuario:
 - Que embaralhar as pilhas
 - Que mostre/liste as cartas das pilhas
 - Que compre cartas das pilhas
+
+- Além de poder ir para a pagina do Api na tela de Créditos
   
 
 [link do api sobre o deck de cartas](https://deckofcardsapi.com/?ref=public_apis&utm_medium=website)
