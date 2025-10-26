@@ -13,7 +13,7 @@ O App permite que o usuario:
 - Que embaralhe o Deck
 - Que compre cartas
 - Que retorna cartas ao deck
-- Que adicione cartas a pilhas de discarte
+- Que adicione cartas a pilhas de descarte
 - Que embaralhar as pilhas
 - Que mostre/liste as cartas das pilhas
 - Que compre cartas das pilhas
