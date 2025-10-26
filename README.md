@@ -33,5 +33,3 @@ O App permite que o usuario:
 - [Tela Deck](https://github.com/PedroSantosMenezesdeJesus/Api_DeckdeCartas/wiki/Tela-Deck)
 - [Tela Pilha](https://github.com/PedroSantosMenezesdeJesus/Api_DeckdeCartas/wiki/Tela-Pilha)
 - [Tela Créditos](https://github.com/PedroSantosMenezesdeJesus/Api_DeckdeCartas/wiki/Tela-Cr%C3%A9ditos)
-
-## Levantamento de Dados
