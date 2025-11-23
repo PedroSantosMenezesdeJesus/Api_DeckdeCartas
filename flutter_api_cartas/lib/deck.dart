@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_api_cartas/deck_class.dart';
+import 'package:flutter_api_cartas/card_class.dart';
 
 void deckpag() {
   runApp(
@@ -24,7 +25,9 @@ class DeckPAG extends State{
   bool deckVisivel = false;
   bool erroVisivel = false;
   Deck deck = Deck.empty();
+  Cards card = Cards.empty();
 
+// criar deck
   Future<void> getDeck() async {
     try {
       var url = "https://deckofcardsapi.com/api/deck/new/";
@@ -35,7 +38,7 @@ class DeckPAG extends State{
         final responseData = jsonDecode(response.body);
 
         final Map<String, dynamic>? deckData = (responseData is Map<String, dynamic>)
-            ? responseData['deck_id'] as Map<String, dynamic>?
+            ? responseData[''] as Map<String, dynamic>?
             : null;
 
         if(deckData != null) {
@@ -66,9 +69,10 @@ class DeckPAG extends State{
     }
   }
 
+// embaralhar deck
 Future<void> getReshuffleDeck() async {
     try {
-      var url = "https://deckofcardsapi.com/api/deck/<<deck_id>>/shuffle/?remaining=true";
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/shuffle/?remaining=true";
       var response = await http.get(
         Uri.parse(url),
       );
@@ -76,7 +80,7 @@ Future<void> getReshuffleDeck() async {
         final responseData = jsonDecode(response.body);
 
         final Map<String, dynamic>? deckData = (responseData is Map<String, dynamic>)
-            ? responseData['deck_id'] as Map<String, dynamic>?
+            ? responseData[''] as Map<String, dynamic>?
             : null;
 
         if(deckData != null) {
@@ -107,7 +111,89 @@ Future<void> getReshuffleDeck() async {
     }
   }
 
-  
+//Comprar cartas
+  Future<void> getDrawCard() async {
+    try {
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/draw/?count=2";
+      var response = await http.get(
+        Uri.parse(url),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+
+        final Map<String, dynamic>? deckData = (responseData is Map<String, dynamic>)
+            ? responseData[''] as Map<String, dynamic>?
+            : null;
+
+        if(deckData != null) {
+          deck = Deck.fromJson(deckData);
+          card = Cards.fromJson(deckData);
+          setState(() {
+            deckVisivel = true;
+            erroVisivel = false;
+          });
+        } else {
+          debugPrint("Erro de formato JSON: Chave 'data' faltando ou nula.");
+          setState(() {
+            deckVisivel = false;
+            erroVisivel = true;
+          });
+        }
+      } else {
+        setState(() {
+          deckVisivel = false;
+          erroVisivel = true;
+        });
+      } 
+    } catch (e) {
+      debugPrint('Erro na requisição ou processamento: $e');
+      setState(() {
+        deckVisivel = false;
+        erroVisivel = true;
+      });
+    }
+  }
+
+  Future<void> getReturnToDeck() async {
+    try {
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/return/";
+      var response = await http.get(
+        Uri.parse(url),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+
+        final Map<String, dynamic>? deckData = (responseData is Map<String, dynamic>)
+            ? responseData[''] as Map<String, dynamic>?
+            : null;
+
+        if(deckData != null) {
+          deck = Deck.fromJson(deckData);
+          setState(() {
+            deckVisivel = true;
+            erroVisivel = false;
+          });
+        } else {
+          debugPrint("Erro de formato JSON: Chave 'data' faltando ou nula.");
+          setState(() {
+            deckVisivel = false;
+            erroVisivel = true;
+          });
+        }
+      } else {
+        setState(() {
+          deckVisivel = false;
+          erroVisivel = true;
+        });
+      } 
+    } catch (e) {
+      debugPrint('Erro na requisição ou processamento: $e');
+      setState(() {
+        deckVisivel = false;
+        erroVisivel = true;
+      });
+    }
+  }
 
 
   @override
@@ -200,7 +286,7 @@ Future<void> getReshuffleDeck() async {
                               backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
                               fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
                             ),
-                            onPressed: getDeck, 
+                            onPressed: getDrawCard, 
                             label: const Text('Compre mais de uma carta', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
                           ),
                         ),
@@ -212,7 +298,7 @@ Future<void> getReshuffleDeck() async {
                               backgroundColor: WidgetStatePropertyAll<Color>(Colors.black12),
                               fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
                             ),
-                            onPressed: getDeck, 
+                            onPressed: getReturnToDeck, 
                             label: const Text('Retornar cartas ao Deck', style: TextStyle(color: Colors.white,), textAlign: TextAlign.center)
                           ),
                         ),       
@@ -242,13 +328,19 @@ Future<void> getReshuffleDeck() async {
                             Row(
                               children: [
                                 Image.network('https://deckofcardsapi.com/static/img/back.png'),
-                                //Image.network(src)
+                                Image.network('https://deckofcardsapi.com/static/img/${card.code}.png')
                               ],
                             )
                           ],
                         ),
                       ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset('img/cartas.png'),
                     )
+
                   ],
                 ),
               );

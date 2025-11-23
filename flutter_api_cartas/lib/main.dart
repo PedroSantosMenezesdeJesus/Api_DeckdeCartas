@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_api_cartas/deck.dart';
 import 'package:flutter_api_cartas/pile.dart';
-
+import 'package:flutter_api_cartas/credits.dart';
 
 void main() {
   runApp(const MaterialApp(title: 'Deck de Cartas',
@@ -22,6 +22,7 @@ class MainAPP extends State {
   [
     DeckPag(),
     PilePag(),
+    CreditsPag(),
   ];
 
   int currentPage = 0;
@@ -54,7 +55,13 @@ class MainAPP extends State {
               backgroundColor: Colors.black,
               icon: Icon(Icons.grid_on, color: Colors.red,),
               label: 'Pilha de Cartas'
-            )
+            ),
+
+            BottomNavigationBarItem(
+              backgroundColor: Colors.black,
+              icon: Icon(Icons.text_snippet, color: Colors.red,),
+              label: 'Créditos API'
+            ),
           ]
         ),
 

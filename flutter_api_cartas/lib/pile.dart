@@ -247,8 +247,12 @@ Future<void> getReshuffleDeck() async {
                           ],
                         ),
                       ),
-                    )
+                    ),
 
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset('img/cartas.png'),
+                    )
                     
                   ],
                 ),
