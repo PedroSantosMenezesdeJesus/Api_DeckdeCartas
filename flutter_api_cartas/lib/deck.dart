@@ -130,7 +130,7 @@ Future<void> getReshuffleDeck() async {
 //Comprar cartas
   Future<void> getDrawCard() async {
     try {
-      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/draw/?count=1";
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/draw/?count=4";
       var response = await http.get(
         Uri.parse(url),
       );
@@ -147,6 +147,8 @@ Future<void> getReshuffleDeck() async {
         //card = responseData['cards'] as Cards;
         card = List<Cards>.from(responseData['cards'].map((model) => Cards.fromJson(model)));
 
+        //card[0].image = responseData['image'] as String;
+      
 
         if(deck.id != null) {
           
@@ -203,11 +205,15 @@ Future<void> getReshuffleDeck() async {
 
         deck.id = responseData['deck_id'] as String;
         deck.sucess = responseData['success'] as bool;
-        deck.shuffled = responseData['shuffled'] as bool;
+        //deck.shuffled = responseData['shuffled'] as bool;
         deck.remaning = responseData['remaining'] as int;
 
         if(deck.id != null) {
+
+          print(deck.remaning);
+
           setState(() {
+            cartaVisivel = false;
             deckVisivel = true;
             erroVisivel = false;
           });
@@ -263,141 +269,163 @@ Future<void> getReshuffleDeck() async {
             itemCount: 1,
             itemBuilder: (context, index) {
 
-              return Container(
-                margin: const EdgeInsets.all(8),
-                padding: const EdgeInsets.all(16),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-
-
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(48, 136, 52, 1),
-                  borderRadius: BorderRadius.circular(16)
-                ),    
-
-                child: Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                  
-                    children: [
-                  
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        
-                        children: [
-                          
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton.icon (
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll<Color>(Colors.black12),
-                                fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
-                              ),
-                              onPressed: getDeck, 
-                              label: const Text('Criar Deck', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
-                            ),
-                          ),
+              return Expanded(
+                child: Container(
+                  margin: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(16),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                
+                
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(48, 136, 52, 1),
+                    borderRadius: BorderRadius.circular(16)
+                  ),    
+                
+                  child: Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
                     
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton.icon (
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
-                                fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
-                              ),
-                              onPressed: getReshuffleDeck, 
-                              label: const Text('Embaralhar Deck', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
-                            ),
-                          ),  
-                  
-                        ],
-                      ),
-                      
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                      children: [
+                    
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton.icon (
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
-                                fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
+                          children: [
+                            
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton.icon (
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.black12),
+                                  fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
+                                ),
+                                onPressed: getDeck, 
+                                label: const Text('Criar Deck', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
                               ),
-                              onPressed: getDrawCard, 
-                              label: const Text('Compre mais de uma carta', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
                             ),
-                          ),
-                          
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton.icon (
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll<Color>(Colors.black12),
-                                fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
-                              ),
-                              onPressed: getReturnToDeck, 
-                              label: const Text('Retornar cartas ao Deck', style: TextStyle(color: Colors.white,), textAlign: TextAlign.center)
-                            ),
-                          ),       
-                        ],
-                      ),
                       
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Visibility(
-                          visible: erroVisivel,
-                          child: Column(
-                            children: [
-                              Icon(Icons.error, color: Colors.red.shade700, size: 48),
-                              const SizedBox(height: 12),
-                              Text("Falha na requisição. Tente novamente.", textAlign: TextAlign.center,),
-                            ],
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton.icon (
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
+                                  fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
+                                ),
+                                onPressed: getReshuffleDeck, 
+                                label: const Text('Embaralhar Deck', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
+                              ),
+                            ),  
+                    
+                          ],
+                        ),
+                        
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton.icon (
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
+                                  fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
+                                ),
+                                onPressed: getDrawCard, 
+                                label: const Text('Compre mais de uma carta', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
+                              ),
+                            ),
+                            
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton.icon (
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.black12),
+                                  fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
+                                ),
+                                onPressed: getReturnToDeck, 
+                                label: const Text('Retornar cartas ao Deck', style: TextStyle(color: Colors.white,), textAlign: TextAlign.center)
+                              ),
+                            ),       
+                          ],
+                        ),
+                        
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Visibility(
+                            visible: erroVisivel,
+                            child: Column(
+                              children: [
+                                Icon(Icons.error, color: Colors.red.shade700, size: 48),
+                                const SizedBox(height: 12),
+                                Text("Falha na requisição. Tente novamente.", textAlign: TextAlign.center,),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                  
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Visibility(
-                          visible: deckVisivel,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Image.network('https://deckofcardsapi.com/static/img/back.png', scale: 1.5),                                  
-                                ],
+                    
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Visibility(
+                            visible: deckVisivel,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.network('https://deckofcardsapi.com/static/img/back.png', scale: 2),                                  
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Visibility(
+                              visible: cartaVisivel,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 4,
+                                itemBuilder: (BuildContext ctx, index)
+                                {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Center(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8),
+                                              child: Image.network(card[index].image, scale: 2.5),
+                                            ),
+                                          )
+                                        ]
+                                      ),
+                                    ],
+                                  );
+                                }
                               )
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Visibility(
-                          visible: cartaVisivel,
-                          child: ListView.builder(
-                            itemCount: 1,
-                            itemBuilder: (BuildContext ctx, index)
-                            {
-                              return Row(
-                                children: [
-                                  Image.network(card[index].image, height: 200,)
-                                ]
-                              );
-                            }
-                          )
-                        ),
-                      ),
-                  
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset('img/cartas.png'),
-                      )
-                  
-                    ],
+                    
+                       
+                       Expanded(
+                         child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.asset('img/cartas.png', scale: 1, fit: BoxFit.fitWidth,),
+                          ),
+                       ) 
+                       
+                    
+                      ],
+                    ),
                   ),
                 ),
               );

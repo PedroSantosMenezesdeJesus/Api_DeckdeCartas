@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_api_cartas/deck_class.dart';
+import 'package:flutter_api_cartas/card_class.dart';
 
 void pilepag() {
   runApp(
@@ -25,10 +26,104 @@ class PilePAG extends State{
   bool deckVisivel = false;
   bool erroVisivel = false;
   Deck deck = Deck.empty();
+  
+  List<Cards> card = List.empty(growable: true);
 
   Future<void> getDeck() async {
     try {
       var url = "https://deckofcardsapi.com/api/deck/new/";
+      var response = await http.get(
+        Uri.parse(url),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+
+        deck.id = responseData['deck_id'] as String;
+        deck.sucess = responseData['success'] as bool;
+        deck.shuffled = responseData['shuffled'] as bool;
+        deck.remaning = responseData['remaining'] as int;
+
+        if(deck.id != null) {     
+          print(deck.id);
+          print(deck.sucess);
+          print(deck.shuffled);
+          print(deck.remaning);
+
+          setState(() {
+            deckVisivel = true;
+            erroVisivel = false;
+          });
+        } else {
+          debugPrint("Erro de formato JSON: Chave 'data' faltando ou nula.");
+          setState(() {
+            deckVisivel = false;
+            erroVisivel = true;
+          });
+        }
+      } else {
+        setState(() {
+          deckVisivel = false;
+          erroVisivel = true;
+        });
+      } 
+    } catch (e) {
+      debugPrint('Erro na requisição ou processamento: $e');
+      setState(() {
+        deckVisivel = false;
+        erroVisivel = true;
+      });
+    }
+  }
+
+Future<void> getAddPiles() async {
+    try {
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/pile/pilhas/add/?cards=AS,2S";
+      var response = await http.get(
+        Uri.parse(url),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+
+        deck.id = responseData['deck_id'] as String;
+        deck.sucess = responseData['success'] as bool;
+        deck.shuffled = responseData['shuffled'] as bool;
+        deck.remaning = responseData['remaining'] as int;
+
+        if(deck.id != null) {     
+          print(deck.id);
+          print(deck.sucess);
+          print(deck.shuffled);
+          print(deck.remaning);
+
+          setState(() {
+            deckVisivel = true;
+            erroVisivel = false;
+          });
+        } else {
+          debugPrint("Erro de formato JSON: Chave 'data' faltando ou nula.");
+          setState(() {
+            deckVisivel = false;
+            erroVisivel = true;
+          });
+        }
+      } else {
+        setState(() {
+          deckVisivel = false;
+          erroVisivel = true;
+        });
+      } 
+    } catch (e) {
+      debugPrint('Erro na requisição ou processamento: $e');
+      setState(() {
+        deckVisivel = false;
+        erroVisivel = true;
+      });
+    }
+  }
+
+Future<void> getShufflePile() async {
+    try {
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/pile/pilhas/shuffle/";
       var response = await http.get(
         Uri.parse(url),
       );
@@ -67,21 +162,26 @@ class PilePAG extends State{
     }
   }
 
-Future<void> getReshuffleDeck() async {
+  Future<void> getListCardsPiles() async {
     try {
-      var url = "https://deckofcardsapi.com/api/deck/<<deck_id>>/shuffle/?remaining=true";
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/pile/pilhas/list/";
       var response = await http.get(
         Uri.parse(url),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
-        final Map<String, dynamic>? deckData = (responseData is Map<String, dynamic>)
-            ? responseData['deck_id'] as Map<String, dynamic>?
-            : null;
+        deck.id = responseData['deck_id'] as String;
+        deck.sucess = responseData['success'] as bool;
+        deck.shuffled = responseData['shuffled'] as bool;
+        deck.remaning = responseData['remaining'] as int;
 
-        if(deckData != null) {
-          deck = Deck.fromJson(deckData);
+        if(deck.id != null) {     
+          print(deck.id);
+          print(deck.sucess);
+          print(deck.shuffled);
+          print(deck.remaning);
+
           setState(() {
             deckVisivel = true;
             erroVisivel = false;
@@ -106,6 +206,60 @@ Future<void> getReshuffleDeck() async {
         erroVisivel = true;
       });
     }
+  }
+
+  Future<void> getDrawPiles() async {
+    try {
+      var url = "https://deckofcardsapi.com/api/deck/${deck.id}/pile/pilhas/draw/random/";
+      var response = await http.get(
+        Uri.parse(url),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+
+        
+
+        deck.id = responseData['deck_id'] as String;
+        deck.sucess = responseData['success'] as bool;
+        deck.shuffled = responseData['shuffled'] as bool;
+        deck.remaning = responseData['remaining'] as int;
+
+        if(deck.id != null) {     
+          print(deck.id);
+          print(deck.sucess);
+          print(deck.shuffled);
+          print(deck.remaning);
+
+          setState(() {
+            deckVisivel = true;
+            erroVisivel = false;
+          });
+        } else {
+          debugPrint("Erro de formato JSON: Chave 'data' faltando ou nula.");
+          setState(() {
+            deckVisivel = false;
+            erroVisivel = true;
+          });
+        }
+      } else {
+        setState(() {
+          deckVisivel = false;
+          erroVisivel = true;
+        });
+      } 
+    } catch (e) {
+      debugPrint('Erro na requisição ou processamento: $e');
+      setState(() {
+        deckVisivel = false;
+        erroVisivel = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDeck();
   }
 
 
@@ -168,7 +322,7 @@ Future<void> getReshuffleDeck() async {
                               backgroundColor: WidgetStatePropertyAll<Color>(Colors.black12),
                               fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
                             ),
-                            onPressed: getDeck, 
+                            onPressed: getAddPiles, 
                             label: const Text('Adicionar à pilha', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
                           ),
                         ),
@@ -180,7 +334,7 @@ Future<void> getReshuffleDeck() async {
                               backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
                               fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
                             ),
-                            onPressed: getReshuffleDeck, 
+                            onPressed: getShufflePile, 
                             label: const Text('Embaralhar pilha', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
                           ),
                         ),  
@@ -199,7 +353,7 @@ Future<void> getReshuffleDeck() async {
                               backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
                               fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
                             ),
-                            onPressed: getDeck, 
+                            onPressed: getListCardsPiles, 
                             label: const Text('Listar cartas nas pilhas', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
                           ),
                         ),
@@ -211,7 +365,7 @@ Future<void> getReshuffleDeck() async {
                               backgroundColor: WidgetStatePropertyAll<Color>(Colors.black12),
                               fixedSize: WidgetStatePropertyAll<Size>(Size(150, 50))
                             ),
-                            onPressed: getDeck, 
+                            onPressed: getDrawPiles, 
                             label: const Text('Comprar das pilhas', style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
                           ),
                         ),       
@@ -241,7 +395,6 @@ Future<void> getReshuffleDeck() async {
                             Row(
                               children: [
                                 Image.network('https://deckofcardsapi.com/static/img/back.png'),
-                                //Image.network(src)
                               ],
                             )
                           ],
@@ -249,10 +402,12 @@ Future<void> getReshuffleDeck() async {
                       ),
                     ),
 
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset('img/cartas.png'),
-                    )
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset('img/cartas.png', scale: 1, fit: BoxFit.fitWidth,),
+                      ),
+                    ) 
                     
                   ],
                 ),
